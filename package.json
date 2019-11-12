@@ -1,0 +1,41 @@
+{
+  "name": "tab-notify",
+  "version": "0.0.1",
+  "description": "Notify your visitors in their browser tab when they leave your page or on custom events",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "ava",
+    "build": "babel --plugins '@babel/plugin-transform-modules-umd' src --out-file ./dist/index.js --no-comments"
+  },
+  "browserslist": [
+    "> 1%",
+    "ie 9"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdimascio/tab-notify.git"
+  },
+  "keywords": [
+    "browser",
+    "document",
+    "title",
+    "notification",
+    "blink",
+    "flash"
+  ],
+  "author": "Ryan DiMascio <ryan@dimasc.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rdimascio/tab-notify/issues"
+  },
+  "homepage": "https://github.com/rdimascio/tab-notify#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-transform-modules-umd": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "ava": "^2.4.0",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0"
+  }
+}
