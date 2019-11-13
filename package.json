@@ -1,10 +1,10 @@
 {
   "name": "tab-notify",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Notify your visitors in their browser tab when they leave your page or on custom events",
   "main": "dist/index.js",
   "scripts": {
-    "test": "ava",
+    "test": "nyc ava --verbose",
     "build": "babel --plugins '@babel/plugin-transform-modules-umd' src --out-file ./dist/index.js --no-comments"
   },
   "browserslist": [
@@ -36,8 +36,14 @@
     "@babel/preset-env": "^7.7.1",
     "ava": "^2.4.0",
     "babel-polyfill": "^6.26.0",
+    "browser-env": "^3.3.0",
     "coveralls": "^3.0.7",
     "nyc": "^14.1.1",
     "xo": "^0.25.3"
+  },
+  "ava": {
+    "require": [
+      "./test/_setup-browser-env.js"
+    ]
   }
 }

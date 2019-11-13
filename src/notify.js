@@ -3,7 +3,8 @@
 export default function TabNotify(config) {
     const defaultConfig = {
         message: 'Hey!',
-        delay: '1000',
+        interval: 1000,
+        flash: true,
         showOnExit: true,
         onHide: null,
         onShow: null
@@ -18,29 +19,47 @@ export default function TabNotify(config) {
     ///////////////
     // Initialize
     const _showNotification = () => {
+        if (
+            config.onShow &&
+            typeof config.onShow === 'function'
+        ) {
+            config.onShow()
+        }
+        
+        if (!config.flash) {
+            document.title = config.message
+            return
+        }
+
         config.interval = setInterval(() => {
             document.title === config.message
                 ? document.title = config.title
                 : document.title = config.message
-        }, config.delay)
-
-        if (this.config.onShow) this.config.onShow()
+        }, config.interval)
     }
 
     /////////////
     // Kill
     const _hideNotification = () => {
-        clearInterval(config.interval)
-        document.title = config.title
-        config.interval = null
+        if (
+            config.onHide &&
+            typeof config.onHide === 'function'
+        ) {
+            config.onHide()
+        }
 
-        if (this.config.onHide) this.config.onHide()
+        document.title = config.title
+
+        if (config.flash) {
+            clearInterval(config.interval)
+            config.interval = null
+        }
     }
 
     (() => {
         if (!config.showOnExit) return
 
-        window.focus()
+        // window.focus()
 
         const visibilityHandler = () => {
             if (document[config.state.hidden]) {
