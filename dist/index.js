@@ -27,10 +27,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
   function TabNotify(config) {
+    var _this = this;
+
     var defaultConfig = {
       message: 'Hey!',
       delay: '1000',
-      showOnExit: true
+      showOnExit: true,
+      onHide: null,
+      onShow: null
     };
     config = _objectSpread({}, defaultConfig, {}, config, {
       state: {},
@@ -38,16 +42,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       interval: null
     });
 
-    var _show = function _show() {
+    var _showNotification = function _showNotification() {
       config.interval = setInterval(function () {
         document.title === config.message ? document.title = config.title : document.title = config.message;
       }, config.delay);
+      if (_this.config.onShow) _this.config.onShow();
     };
 
-    var _hide = function _hide() {
+    var _hideNotification = function _hideNotification() {
       clearInterval(config.interval);
       document.title = config.title;
       config.interval = null;
+      if (_this.config.onHide) _this.config.onHide();
     };
 
     (function () {
@@ -56,9 +62,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       var visibilityHandler = function visibilityHandler() {
         if (document[config.state.hidden]) {
-          _show();
+          _showNotification();
         } else {
-          _hide();
+          _hideNotification();
         }
       };
 
@@ -78,19 +84,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (typeof document.onfocusin !== "undefined") {
         config.state.hidden = "onfocusin";
-        document.onfocusin = _show();
-        document.onfocusout = _hide();
+        document.onfocusin = _showNotification();
+        document.onfocusout = _hideNotification();
       } else if (typeof document.addEventListener !== "undefined" && config.state.hidden !== undefined) {
         document.addEventListener(config.state.visibilityChange, visibilityHandler, false);
       } else {
-        window.onpageshow = window.onfocus = _show();
-        window.onpagehide = window.onblur = _hide();
+        window.onpageshow = window.onfocus = _showNotification();
+        window.onpagehide = window.onblur = _hideNotification();
       }
     })();
 
     return {
-      show: _show,
-      hide: _hide
+      show: _showNotification,
+      hide: _hideNotification
     };
   }
 });

@@ -4,7 +4,9 @@ export default function TabNotify(config) {
     const defaultConfig = {
         message: 'Hey!',
         delay: '1000',
-        showOnExit: true
+        showOnExit: true,
+        onHide: null,
+        onShow: null
     }
 
     config = {...defaultConfig, ...config, state: {}, title: document.title, interval: null}
@@ -15,20 +17,24 @@ export default function TabNotify(config) {
 
     ///////////////
     // Initialize
-    const _show = () => {
+    const _showNotification = () => {
         config.interval = setInterval(() => {
             document.title === config.message
                 ? document.title = config.title
                 : document.title = config.message
         }, config.delay)
+
+        if (this.config.onShow) this.config.onShow()
     }
 
     /////////////
     // Kill
-    const _hide = () => {
+    const _hideNotification = () => {
         clearInterval(config.interval)
         document.title = config.title
         config.interval = null
+
+        if (this.config.onHide) this.config.onHide()
     }
 
     (() => {
@@ -38,9 +44,9 @@ export default function TabNotify(config) {
 
         const visibilityHandler = () => {
             if (document[config.state.hidden]) {
-                _show()
+                _showNotification()
             } else {
-                _hide()
+                _hideNotification()
             }
         }
 
@@ -64,18 +70,18 @@ export default function TabNotify(config) {
         
         if (typeof document.onfocusin !== "undefined") {
             config.state.hidden = "onfocusin"
-            document.onfocusin = _show()
-            document.onfocusout = _hide()
+            document.onfocusin = _showNotification()
+            document.onfocusout = _hideNotification()
         } else if (typeof document.addEventListener !== "undefined" && config.state.hidden !== undefined) {
             document.addEventListener(config.state.visibilityChange, visibilityHandler, false)
         } else {
-            window.onpageshow = window.onfocus = _show()
-            window.onpagehide = window.onblur = _hide()
+            window.onpageshow = window.onfocus = _showNotification()
+            window.onpagehide = window.onblur = _hideNotification()
         }
     })();
 
     return {
-        show: _show,
-        hide: _hide
+        show: _showNotification,
+        hide: _hideNotification
     }
 }
